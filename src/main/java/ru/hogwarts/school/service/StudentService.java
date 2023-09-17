@@ -1,5 +1,6 @@
 package ru.hogwarts.school.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +10,13 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class StudentService {
     Logger logger = LoggerFactory.getLogger(StudentService.class);
+    private int count = 0;
     @Autowired
     private final StudentRepository studentRepository;
 
@@ -53,12 +56,54 @@ public class StudentService {
 
     public double getAverageAgeOfStudents() {
         logger.info("getAverageAgeOfStudents method has been invoked");
-        return studentRepository.getAverageAgeOfStudents();
+        return getAllStudents().stream()
+                .mapToDouble(Student::getAge)
+                .average()
+                .orElseThrow(DataNotFoundException::new);
     }
 
     public Collection<Student> getLastFiveStudents() {
         logger.info("getLastFiveStudents method has been invoked");
         return studentRepository.getLastFiveStudents();
+    }
+
+    public Collection<String> getByA() {
+        return getAllStudents().stream()
+                .parallel()
+                .map(s -> s.getName().toUpperCase())
+                .filter(s -> StringUtils.startsWithIgnoreCase(s, "a"))
+                .toList();
+    }
+
+    public void getSixNames() {
+        logger.info(studentRepository.findAll().get(0).getName());
+        logger.info(studentRepository.findAll().get(1).getName());
+
+        new Thread(() -> {
+            logger.info(studentRepository.findAll().get(2).getName());
+            logger.info(studentRepository.findAll().get(3).getName());
+        }).start();
+
+        new Thread(() -> {
+            logger.info(studentRepository.findAll().get(4).getName());
+            logger.info(studentRepository.findAll().get(5).getName());
+        }).start();
+    }
+
+    public void getSixNamesSynchronized() {
+        List<Student> students = studentRepository.findAll();
+        printName(students);
+        printName(students);
+
+        new Thread(() -> {
+            printName(students);
+            printName(students);
+        }).start();
+
+        new Thread(() -> {
+            printName(students);
+            printName(students);
+        }).start();
     }
 
     public Student createStudent(Student student) {
@@ -86,5 +131,10 @@ public class StudentService {
     public Collection<Student> findByAgeBetween(int max, int min) {
         logger.info("findByAgeBetween method has been invoked");
         return studentRepository.findByAgeBetween(max, min);
+    }
+
+    private synchronized void printName(List<Student> students) {
+        logger.info(students.get(count % students.size()).getName());
+        count++;
     }
 }
