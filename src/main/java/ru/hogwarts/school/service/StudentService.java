@@ -12,6 +12,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -67,12 +68,16 @@ public class StudentService {
         return studentRepository.getLastFiveStudents();
     }
 
-    public Collection<String> getByA() {
-        return getAllStudents().stream()
-                .parallel()
-                .map(s -> s.getName().toUpperCase())
-                .filter(s -> StringUtils.startsWithIgnoreCase(s, "a"))
-                .toList();
+
+    public List<String> getByA() {
+        return studentRepository
+                .findAll()
+                .stream()
+                .map(Student::getName)
+                .filter(name -> StringUtils.startsWithIgnoreCase(name, "a"))
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     public void getSixNames() {

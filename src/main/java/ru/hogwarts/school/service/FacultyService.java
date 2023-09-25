@@ -81,11 +81,5 @@ public class FacultyService {
         facultyRepository.delete(deletedFaculty);
     }
 
-    public int task4() {
-        int sum = Stream.iterate(1, a -> a + 1)
-                .parallel()
-                .limit(1_000_000)
-                .reduce(0, Integer::sum);
-        return sum;
-    }
+
 }
