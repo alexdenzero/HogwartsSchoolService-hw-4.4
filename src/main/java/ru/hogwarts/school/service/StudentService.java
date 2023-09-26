@@ -69,14 +69,13 @@ public class StudentService {
     }
 
 
+
     public List<String> getByA() {
-        return studentRepository
-                .findAll()
+        return studentRepository.findAll()
                 .stream()
-                .map(Student::getName)
-                .filter(name -> StringUtils.startsWithIgnoreCase(name, "a"))
-                .map(String::toUpperCase)
-                .sorted()
+                .map(student -> student.getName().toUpperCase())
+                .filter(name -> name.startsWith("a"))
+                .sorted((n1, n2) -> n2.compareTo(n1))
                 .collect(Collectors.toList());
     }
 

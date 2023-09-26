@@ -5,6 +5,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/faculty")
@@ -64,6 +65,9 @@ public class FacultyController {
 
     @GetMapping("/task4")
     public int task4() {
-        return facultyService.task4();
+        return Stream.iterate(1, a -> a +1)
+                .parallel() // 582 ms -> 499 ms
+                .limit(1_000_000)
+                .reduce(0, (a, b) -> a + b );
     }
 }
