@@ -5,6 +5,7 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 @RestController
@@ -63,19 +64,18 @@ public class FacultyController {
         facultyService.deleteFaculty(id);
     }
 
+
+
     @GetMapping("/task4")
-    public int task4() {
-        long start = System.currentTimeMillis();
-
-        int sum = Stream
-                .iterate(1, a -> a + 1)
-                .limit(1_000_000)
-                .parallel() // не ускоряет
-                .reduce(0, (a, b) -> a + b);
-
-        long finish = System.currentTimeMillis();
-        System.out.println(finish - start);
-
-        return sum;
+    public String task4(){
+        // Изначально long sum = Stream.iterate(1, a -> a + 1)
+        // .limit(50_000_000)
+        // .reduce(0l, (a, b) -> a + b );
+        long startTime = System.currentTimeMillis();
+        long result = LongStream.range(1,50_000_000)
+                .parallel()
+                .sum();
+        long timeConsumed = System.currentTimeMillis() - startTime;
+        return "Time consumed = " + timeConsumed + " ms.Result = " + result;
     }
 }
