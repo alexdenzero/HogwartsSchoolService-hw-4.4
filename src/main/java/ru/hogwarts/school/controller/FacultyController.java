@@ -65,9 +65,17 @@ public class FacultyController {
 
     @GetMapping("/task4")
     public int task4() {
-        return Stream.iterate(1, a -> a +1)
-                .parallel() // 582 ms -> 499 ms
+        long start = System.currentTimeMillis();
+
+        int sum = Stream
+                .iterate(1, a -> a + 1)
                 .limit(1_000_000)
-                .reduce(0, (a, b) -> a + b );
+                .parallel() // не ускоряет
+                .reduce(0, (a, b) -> a + b);
+
+        long finish = System.currentTimeMillis();
+        System.out.println(finish - start);
+
+        return sum;
     }
 }
