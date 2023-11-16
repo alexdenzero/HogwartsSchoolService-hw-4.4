@@ -5,6 +5,8 @@ import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/faculty")
@@ -37,6 +39,11 @@ public class FacultyController {
     }
 
 
+    @GetMapping("/longestName")
+    public String getTheLongestName() {
+        return facultyService.getTheLongestFacultyName();
+    }
+
 //    @GetMapping("/filtered")
 //    public Collection<Faculty> getFacultiesByColor(@RequestParam("color") String color) {
 //        return facultyService.getFacultiesByColor(color);
@@ -55,5 +62,20 @@ public class FacultyController {
     @DeleteMapping("/{id}")
     public void deleteFaculty(@PathVariable("id") Long id) {
         facultyService.deleteFaculty(id);
+    }
+
+
+
+    @GetMapping("/task4")
+    public String task4(){
+        // Изначально long sum = Stream.iterate(1, a -> a + 1)
+        // .limit(50_000_000)
+        // .reduce(0l, (a, b) -> a + b );
+        long startTime = System.currentTimeMillis();
+        long result = LongStream.range(1,50_000_000)
+                .parallel()
+                .sum();
+        long timeConsumed = System.currentTimeMillis() - startTime;
+        return "Time consumed = " + timeConsumed + " ms.Result = " + result;
     }
 }

@@ -8,8 +8,10 @@ import ru.hogwarts.school.exceptions.DataNotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.repository.FacultyRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class FacultyService {
@@ -51,6 +53,13 @@ public class FacultyService {
         return facultyRepository.findByStudents_Id(studentId).orElseThrow(DataNotFoundException::new);
     }
 
+    public String getTheLongestFacultyName() {
+        return facultyRepository.findAll().stream()
+                .map(Faculty::getName)
+                .max(Comparator.comparing(String::length))
+                .orElse(null);
+    }
+
     public Faculty createFaculty(Faculty faculty) {
         logger.info("createFaculty method has been invoked");
         return facultyRepository.save(faculty);
@@ -71,4 +80,6 @@ public class FacultyService {
         Faculty deletedFaculty = facultyRepository.findById(id).orElseThrow(DataNotFoundException::new);
         facultyRepository.delete(deletedFaculty);
     }
+
+
 }

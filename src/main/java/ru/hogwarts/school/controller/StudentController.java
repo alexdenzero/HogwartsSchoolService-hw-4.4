@@ -5,6 +5,7 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/student")
@@ -54,6 +55,21 @@ public class StudentController {
     @GetMapping("/last-five")
     public Collection<Student> getLastFiveStudents() {
         return studentService.getLastFiveStudents();
+    }
+
+    @GetMapping("/startBy/a")
+    public List<String> getByA() {
+        return studentService.getByA();
+    }
+
+    @GetMapping("/task-4-6-1")
+    public void getSixNames() {
+        studentService.getSixNames();
+    }
+
+    @GetMapping("/task-4-6-2")
+    public void getSixNamesSynchronized() {
+        studentService.getSixNamesSynchronized();
     }
 
     @PostMapping
